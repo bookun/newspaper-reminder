@@ -26,6 +26,16 @@ func Remind(w http.ResponseWriter, r *http.Request) {
 		&model.Man{ID: "UAKAEHGSD"},
 		&model.Man{ID: "UJ4FQ8LLX"},
 	}
+	if uid := r.URL.Query().Get("user_id"); uid != "" {
+		for index, person := range people {
+			if person.GetID() == uid {
+				if err := slack.Send(person.GetResetMessage()); err != nil {
+					fmt.Fprintln(w, err)
+				}
+				people = append(people[:index], people[index+1:]...)
+			}
+		}
+	}
 	picker := people[rand.Intn(len(people))]
 	if err := slack.Send(picker.GetMessage()); err != nil {
 		fmt.Fprintln(w, err)
