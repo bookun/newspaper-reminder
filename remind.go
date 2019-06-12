@@ -26,7 +26,7 @@ func Remind(w http.ResponseWriter, r *http.Request) {
 		&model.Man{ID: "UAKAEHGSD"},
 		&model.Man{ID: "UJ4FQ8LLX"},
 	}
-	if uid := r.URL.Query().Get("user_id"); uid != "" {
+	if uid := r.PostFormValue("user_id"); uid != "" {
 		for index, person := range people {
 			if person.GetID() == uid {
 				if err := slack.Send(person.GetResetMessage()); err != nil {
